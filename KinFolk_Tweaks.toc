@@ -1,0 +1,8 @@
+## Interface: 16001
+## Title: KinFolk Tweaks
+## Notes: Small personal changes to KinFolk, made from outside it: guildmates in your group get no KinFolk dot on the minimap (the game already shows them).
+## Author: somecommoner (unofficial companion to KinFolk)
+## Version: 0.1.0
+## Dependencies: KinFolk
+
+PartyDots.lua
