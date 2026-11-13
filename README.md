@@ -11,3 +11,7 @@ If a KinFolk update changes how it draws dots, the tweak turns itself off and sa
 ## Install
 
 Copy or symlink this folder into `_forever_/Interface/AddOns/KinFolk_Tweaks`. It needs KinFolk.
+
+## Releases
+
+Every push to `main` that changes a `.lua` or `.toc` file publishes a new release, and WowUp picks it up. The version goes up by one each time (0.1.0, 0.1.1, ...). For a bigger jump, set `## Version:` in the `.toc` to the new number in the same push.
