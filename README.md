@@ -4,7 +4,7 @@ An unofficial companion addon for KinFolk on WoW Forever. It makes small persona
 
 ## Tweaks
 
-- **No minimap dot for guildmates in your group.** The game already shows party and raid members on the minimap, so KinFolk's dot is a double. Dots come back when they leave the group. KinFolk's world map dots are left alone.
+- **No KinFolk dot for guildmates in your group.** The game already shows party and raid members on the minimap and world map, so KinFolk's dot is a double. This applies to both maps, and dots come back when they leave the group. KinFolk's zone count markers on the world map are left alone.
 
 If a KinFolk update changes how it draws dots, the tweak turns itself off and says so once in chat.
 

@@ -1,14 +1,21 @@
--- KinFolk Tweaks: no KinFolk minimap dot for guildmates in your group.
--- The game already draws party and raid members on the minimap, so KinFolk's
--- dot on top is a double. World map dots are left alone.
+-- KinFolk Tweaks: no KinFolk dot for guildmates in your group, on the minimap
+-- or the world map. The game already shows party and raid members on both,
+-- so KinFolk's dot on top is a double. KinFolk's zone count markers on the
+-- world map are left alone.
 --
 -- KinFolk keeps its code private, but it draws dots through the shared
 -- HereBeDragons-Pins library with the ref "KinFolkGuildMap", and sets
 -- frame.kinfolkKey (lower-case "first last") on each dot first. This wraps
--- that library call; KinFolk's own files are untouched. If any of that
+-- those library calls; KinFolk's own files are untouched. If any of that
 -- changes, the tweak does nothing and says so once.
 
 local REF = "KinFolkGuildMap"
+
+-- The two maps KinFolk draws dots on, and the library calls for each.
+local KINDS = {
+    { add = "AddMinimapIconMap", remove = "RemoveMinimapIcon" },
+    { add = "AddWorldMapIconMap", remove = "RemoveWorldMapIcon" },
+}
 
 local function Print(message)
     DEFAULT_CHAT_FRAME:AddMessage("|cff33ff99KinFolk Tweaks|r: " .. message)
@@ -27,42 +34,57 @@ local function Key(name)
 end
 
 local grouped = {}      -- key -> true for everyone in your party or raid
-local shown = {}        -- KinFolk minimap dot -> the arguments it was drawn with
-local hidden = {}       -- dots this tweak is holding back
 
 local function InGroup(icon)
     return icon.kinfolkKey ~= nil and grouped[icon.kinfolkKey] == true
 end
 
-local pins, add, remove
+local pins
 
-local function Wrap()
-    pins = LibStub and LibStub("HereBeDragons-Pins-2.0", true)
-    if type(pins) ~= "table" or type(pins.AddMinimapIconMap) ~= "function"
-        or type(pins.RemoveMinimapIcon) ~= "function" then
-        Print("KinFolk's map library looks different, so party dots are left as they are.")
-        return false
-    end
-    add, remove = pins.AddMinimapIconMap, pins.RemoveMinimapIcon
+-- Wraps one map's add and remove calls. Each kind keeps its own lists:
+-- shown = KinFolk dot -> the arguments it was drawn with,
+-- hidden = dots this tweak is holding back.
+local function WrapKind(kind)
+    local add, remove = pins[kind.add], pins[kind.remove]
+    kind.original_add, kind.original_remove = add, remove
+    kind.shown, kind.hidden = {}, {}
 
-    pins.AddMinimapIconMap = function(self, ref, icon, ...)
-        if ref == REF and type(icon) == "table" then
-            shown[icon] = { n = select("#", ...), ... }
+    pins[kind.add] = function(self, ref, icon, ...)
+        -- Only KinFolk's player dots carry a kinfolkKey; zone markers don't.
+        if ref == REF and type(icon) == "table" and icon.kinfolkKey ~= nil then
+            kind.shown[icon] = { n = select("#", ...), ... }
             if InGroup(icon) then
-                hidden[icon] = true
+                kind.hidden[icon] = true
                 return remove(self, ref, icon)
             end
-            hidden[icon] = nil
+            kind.hidden[icon] = nil
         end
         return add(self, ref, icon, ...)
     end
 
-    pins.RemoveMinimapIcon = function(self, ref, icon, ...)
+    pins[kind.remove] = function(self, ref, icon, ...)
         -- KinFolk took the dot away (offline, stale, map turned off).
         if ref == REF and icon then
-            shown[icon], hidden[icon] = nil, nil
+            kind.shown[icon], kind.hidden[icon] = nil, nil
         end
         return remove(self, ref, icon, ...)
+    end
+end
+
+local function Wrap()
+    pins = LibStub and LibStub("HereBeDragons-Pins-2.0", true)
+    if type(pins) ~= "table" then
+        Print("KinFolk's map library looks different, so party dots are left as they are.")
+        return false
+    end
+    for _, kind in ipairs(KINDS) do
+        if type(pins[kind.add]) ~= "function" or type(pins[kind.remove]) ~= "function" then
+            Print("KinFolk's map library looks different, so party dots are left as they are.")
+            return false
+        end
+    end
+    for _, kind in ipairs(KINDS) do
+        WrapKind(kind)
     end
     return true
 end
@@ -80,15 +102,17 @@ local function RefreshGroup()
         end
     end
     -- Hide dots for people who joined; bring back dots for people who left.
-    for icon, args in pairs(shown) do
-        if InGroup(icon) then
-            if not hidden[icon] then
-                hidden[icon] = true
-                remove(pins, REF, icon)
+    for _, kind in ipairs(KINDS) do
+        for icon, args in pairs(kind.shown) do
+            if InGroup(icon) then
+                if not kind.hidden[icon] then
+                    kind.hidden[icon] = true
+                    kind.original_remove(pins, REF, icon)
+                end
+            elseif kind.hidden[icon] then
+                kind.hidden[icon] = nil
+                kind.original_add(pins, REF, icon, unpack(args, 1, args.n))
             end
-        elseif hidden[icon] then
-            hidden[icon] = nil
-            add(pins, REF, icon, unpack(args, 1, args.n))
         end
     end
 end
