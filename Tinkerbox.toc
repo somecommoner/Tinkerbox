@@ -1,0 +1,27 @@
+## Interface: 16001
+## Title: Tinkerbox
+## Notes: Small fixes for WoW Forever and other add-ons, made from outside them. Each module has its own page in Options > AddOns > Tinkerbox, and only runs when the add-ons it changes are loaded.
+## Author: somecommoner
+## Version: 0.2.0
+## OptionalDeps: KinFolk, OneForAll
+## SavedVariables: TinkerboxDB
+
+Core/Core.lua
+Core/Widgets.lua
+Core/Options.lua
+
+# Game (helper first, then its modules)
+Game/CVars.lua
+Game/GroundClutter.lua
+Game/ViewDistance.lua
+Game/ObjectDetail.lua
+Game/Shadows.lua
+Game/Sharpening.lua
+Game/ScreenEffects.lua
+Game/Camera.lua
+Game/Gameplay.lua
+
+# KinFolk (helper first, then its modules)
+KinFolk/Pins.lua
+KinFolk/PartyDots.lua
+KinFolk/OneForAllDots.lua
