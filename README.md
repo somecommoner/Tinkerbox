@@ -6,6 +6,8 @@ An unofficial companion addon for KinFolk on WoW Forever. It makes small persona
 
 - **No KinFolk dot for guildmates in your group.** The game already shows party and raid members on the minimap and world map, so KinFolk's dot is a double. This applies to both maps, and dots come back when they leave the group. KinFolk's zone count markers on the world map are left alone.
 
+- **No double guild dots with OneForAll.** OneForAll's "Guild members" option also puts guildmates on the world map, so anyone running both add-ons showed twice. Their OneForAll dot is left out and the KinFolk one stays. Guildmates who only have OneForAll (or OpenMap) still show through OneForAll. Without OneForAll this does nothing.
+
 If a KinFolk update changes how it draws dots, the tweak turns itself off and says so once in chat.
 
 ## Install

@@ -9,6 +9,8 @@
 -- those library calls; KinFolk's own files are untouched. If any of that
 -- changes, the tweak does nothing and says so once.
 
+local _, ns = ...
+
 local REF = "KinFolkGuildMap"
 
 -- The two maps KinFolk draws dots on, and the library calls for each.
@@ -32,6 +34,7 @@ local function Key(name)
     end
     return name:lower()
 end
+ns.Key = Key
 
 local grouped = {}      -- key -> true for everyone in your party or raid
 
@@ -52,7 +55,11 @@ local function WrapKind(kind)
     pins[kind.add] = function(self, ref, icon, ...)
         -- Only KinFolk's player dots carry a kinfolkKey; zone markers don't.
         if ref == REF and type(icon) == "table" and icon.kinfolkKey ~= nil then
+            local new = kind.shown[icon] == nil
             kind.shown[icon] = { n = select("#", ...), ... }
+            if new and kind.changed then
+                kind.changed()
+            end
             if InGroup(icon) then
                 kind.hidden[icon] = true
                 return remove(self, ref, icon)
@@ -64,11 +71,34 @@ local function WrapKind(kind)
 
     pins[kind.remove] = function(self, ref, icon, ...)
         -- KinFolk took the dot away (offline, stale, map turned off).
-        if ref == REF and icon then
+        if ref == REF and icon and kind.shown[icon] then
             kind.shown[icon], kind.hidden[icon] = nil, nil
+            if kind.changed then
+                kind.changed()
+            end
         end
         return remove(self, ref, icon, ...)
     end
+end
+
+-- For OneForAllDots.lua: does KinFolk have a world map dot for this name?
+-- (Counted even while held back above for a group member.)
+local world = KINDS[2]
+function ns.KinFolkWorldDot(name)
+    local key, shown = Key(name), world.shown
+    if not key or not shown then
+        return false
+    end
+    for icon in pairs(shown) do
+        if icon.kinfolkKey == key then
+            return true
+        end
+    end
+    return false
+end
+-- OneForAllDots.lua sets this to hear when a world map dot comes or goes.
+function ns.OnKinFolkWorldDotsChanged(fn)
+    world.changed = fn
 end
 
 local function Wrap()
