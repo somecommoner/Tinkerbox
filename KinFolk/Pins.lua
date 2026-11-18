@@ -1,6 +1,7 @@
--- Tinkerbox, KinFolk: shared helper, not a module (no switch of its own).
--- Keeps track of KinFolk's guildmate dots, so KinFolk modules can hold
--- some back (filters) or ask who has one (HasWorldDot).
+-- Tinkerbox, KinFolk: shared helper, not a section (no switch of its own).
+-- Keeps track of KinFolk's guildmate dots, so sections can hold some back
+-- (filters, KinFolk/PartyDots.lua) or ask who has one (HasWorldDot,
+-- OneForAll/GuildDots.lua).
 --
 -- KinFolk keeps its code private, but it draws dots through the shared
 -- HereBeDragons-Pins library with the ref "KinFolkGuildMap", and sets

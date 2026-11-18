@@ -1,6 +1,6 @@
--- Tinkerbox, Game: shared helper, not a module. Makes a module out of a
+-- Tinkerbox, Game: shared helper, not a section. Makes a section out of a
 -- list of the game's own settings (CVars), most of them ones its options
--- menu doesn't show.
+-- menu doesn't show. Used by the Graphics and Game settings modules.
 --
 -- How a setting behaves:
 --   * Left alone, it's the game's own: its slider shows what the game has,
@@ -9,11 +9,12 @@
 --     then ours is written, and kept: the game's Graphics menu rewrites many
 --     of these when it changes, so after any graphics setting changes ours
 --     is put back (and the menu's new value noted as the game's own).
---   * Reset, or the module switched off: the game's own is written back.
+--   * Reset, or the section (or its module) switched off: the game's own
+--     is written back.
 -- Settings this client doesn't have are left off the page. Ones the game
 -- won't change in a fight (secure) wait for it to end.
 --
--- def = ns.Module's fields, plus settings = { {
+-- def = ns.Section's fields (module = "graphics", ...), plus settings = { {
 --   cvar = "groundEffectDensity", label = "Density", desc = "...",
 --   min = 16, max = 256, step = 8, decimals = 0,   -- a slider, or
 --   values = { 512, 1024, 2048 },                  -- a slider over these, or
@@ -59,12 +60,12 @@ local function Format(value, decimals)
     return string.format("%." .. (decimals or 0) .. "f", value)
 end
 
-local modules = {}      -- every CVar module, for the shared watcher
+local modules = {}      -- every CVar section, for the shared watcher
 
-function ns.CVarModule(def)
+function ns.CVarSection(def)
     local settings = def.settings
     def.settings = nil
-    local M = ns.Module(def)
+    local M = ns.Section(def)
     if not M then
         return nil
     end
@@ -177,14 +178,14 @@ function ns.CVarModule(def)
     end
 
     M.BuildOptions = function(self, page, below)
-        ns.BuildCVarRows(self, page, below, Present(), Get, Default, Format)
+        return ns.BuildCVarRows(self, page, below, Present(), Get, Default, Format)
     end
 
     return M
 end
 
--- The rows on a CVar module's page: label, value, slider or checkbox, and
--- a Reset button while the value is ours.
+-- The rows in a CVar section: label, value, slider or checkbox, and a Reset
+-- button while the value is ours. Returns their height.
 function ns.BuildCVarRows(M, page, below, list, Get, Default, Format)
     local UI = ns.UI
     local refreshers = {}
@@ -195,10 +196,11 @@ function ns.BuildCVarRows(M, page, below, list, Get, Default, Format)
     end
 
     local anchor, gap = below, -18
+    local height = 0
     if #list == 0 then
         local none = UI.Text(page, "GameFontDisable", "This client has none of these settings.")
         none:SetPoint("TOPLEFT", anchor, "BOTTOMLEFT", 4, gap)
-        return
+        return -gap + 14
     end
     for _, s in ipairs(list) do
         local row = CreateFrame("Frame", nil, page)
@@ -304,14 +306,16 @@ function ns.BuildCVarRows(M, page, below, list, Get, Default, Format)
             value:SetTextColor(ours and 0.4 or 1, ours and 1 or 1, ours and 0.4 or 1)
         end
         refreshers[#refreshers + 1] = Refresh
+        height = height - gap + (s.toggle and 40 or 52)
         anchor, gap = row, -12
     end
     page:HookScript("OnShow", RefreshAll)
     M.RefreshOptions = RefreshAll
     RefreshAll()
+    return height
 end
 
--- One watcher for every CVar module: at login, after a fight (for the ones
+-- One watcher for every CVar section: at login, after a fight (for the ones
 -- that waited), and shortly after a graphics setting or one of ours changes
 -- (the Graphics menu writes several at once), put ours back.
 local pending = false

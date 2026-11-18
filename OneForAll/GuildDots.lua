@@ -1,4 +1,4 @@
--- Tinkerbox module, KinFolk + OneForAll: no OneForAll guild dot on the world
+-- Tinkerbox section, OneForAll: no OneForAll guild dot on the world
 -- map for a guildmate KinFolk already shows there. Both add-ons draw
 -- guildmates on the world map, each only for people who run it, so someone
 -- with both showed twice. The KinFolk dot stays; OneForAll still shows
@@ -11,13 +11,14 @@
 
 local _, ns = ...
 
-local M = ns.Module({
-    key = "kinfolkOneForAllDots",
-    title = "KinFolk + OneForAll dots",
+local M = ns.Section({
+    module = "oneforall",
+    key = "kinfolkOneForAllDots",   -- its key from before it moved here
+    title = "Guild dots",
     desc = "Guildmates who run both KinFolk and OneForAll showed twice on the world map."
         .. " This keeps their KinFolk dot and leaves out the OneForAll one."
         .. " Guildmates with only OneForAll (or OpenMap) still show through OneForAll.",
-    needs = { "KinFolk", "OneForAll" },
+    needs = { "KinFolk" },  -- reads KinFolk's dots (KinFolk/Pins.lua)
 })
 if not M then
     return

@@ -1,13 +1,13 @@
--- Tinkerbox module, Game: how long objects (trees, fences, crates) and
+-- Tinkerbox section, Graphics: how long objects (trees, fences, crates) and
 -- creatures keep their detail, and how soon small things pop out.
 
 local _, ns = ...
 
-ns.CVarModule({
+ns.CVarSection({
+    module = "graphics",
     key = "gameObjectDetail",
     title = "Objects and creatures",
     desc = "Less pop-in: objects and creatures keep their detail further out, and small things stay visible longer.",
-    changes = "The game's own settings",
     settings = {
         { cvar = "doodadLodScale", label = "Object detail", min = 50, max = 300, step = 10,
           desc = "How far out trees, fences and crates keep full detail. The Graphics menu goes up to 150." },

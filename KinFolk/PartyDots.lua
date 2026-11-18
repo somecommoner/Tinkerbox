@@ -1,16 +1,16 @@
--- Tinkerbox module, KinFolk: no KinFolk dot for guildmates in your group, on
+-- Tinkerbox section, KinFolk: no KinFolk dot for guildmates in your group, on
 -- the minimap or the world map. The game already shows party and raid
 -- members on both, so KinFolk's dot on top is a double. Dots come back when
 -- they leave the group, or when this is switched off.
 
 local _, ns = ...
 
-local M = ns.Module({
+local M = ns.Section({
+    module = "kinfolk",
     key = "kinfolkPartyDots",
-    title = "KinFolk party dots",
+    title = "Party dots",
     desc = "Hides KinFolk's dot for guildmates in your party or raid, on the minimap and the world map."
         .. " The game already shows them there. Their dots come back when they leave the group.",
-    needs = { "KinFolk" },
 })
 if not M then
     return

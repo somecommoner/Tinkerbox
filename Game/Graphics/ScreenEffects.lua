@@ -1,13 +1,13 @@
--- Tinkerbox module, Game: full-screen effects and footprints, which the
+-- Tinkerbox section, Graphics: full-screen effects and footprints, which the
 -- options menu has no switches for.
 
 local _, ns = ...
 
-ns.CVarModule({
+ns.CVarSection({
+    module = "graphics",
     key = "gameScreenEffects",
     title = "Screen effects",
     desc = "Switch off full-screen effects that wash out the picture, and footprints in snow and sand.",
-    changes = "The game's own settings",
     settings = {
         { cvar = "ffxGlow", toggle = true, label = "Full-screen glow",
           desc = "The soft bloom over bright areas." },

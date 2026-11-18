@@ -1,14 +1,14 @@
--- Tinkerbox module, Game: how far the land and buildings are drawn, and in
+-- Tinkerbox section, Graphics: how far the land and buildings are drawn, and in
 -- how much detail, past the Graphics menu's View Distance.
 
 local _, ns = ...
 
-ns.CVarModule({
+ns.CVarSection({
+    module = "graphics",
     key = "gameViewDistance",
     title = "View distance",
     desc = "How far the world is drawn, and how far out land and buildings keep their full detail."
         .. " Higher costs frame rate, most of all in cities.",
-    changes = "The game's own settings",
     settings = {
         -- farclip (the far edge of everything) is raised with it, never lowered.
         { cvar = "horizonStart", also = { "farclip" }, label = "View distance", min = 400, max = 24000, step = 400,

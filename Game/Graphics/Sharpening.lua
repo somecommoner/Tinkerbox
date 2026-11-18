@@ -1,13 +1,13 @@
--- Tinkerbox module, Game: the FSR sharpening pass, which the game only runs
+-- Tinkerbox section, Graphics: the FSR sharpening pass, which the game only runs
 -- while upscaling (Render Scale below 100%) unless told to.
 
 local _, ns = ...
 
-ns.CVarModule({
+ns.CVarSection({
+    module = "graphics",
     key = "gameSharpening",
     title = "Sharpening",
     desc = "Crisper edges and textures, at full Render Scale too. It sharpens what's there; it doesn't add detail.",
-    changes = "The game's own settings",
     settings = {
         { cvar = "ResampleAlwaysSharpen", toggle = true, label = "Always sharpen",
           desc = "Run the sharpening pass even when not upscaling." },
