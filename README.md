@@ -30,7 +30,7 @@ The game's other settings past what its options menu allows. They work like the 
 
 Extras for the game's Equipment Manager.
 
-- **Equipment set per spec.** Pick an equipment set for each dual spec; switching spec puts it on (after combat, if you're in a fight). Saved per character. Forever's Equipment Manager can't assign sets to specs itself.
+- **Equipment set per spec.** Pick an equipment set for each dual spec; switching spec puts it on (after combat, if you're in a fight). Before that it saves what you're wearing to the old spec's set (a tick box, on by default; slots the set ignores stay ignored). Picks are saved per character. Forever's Equipment Manager can't assign sets to specs itself.
 
 ### KinFolk
 

@@ -1,7 +1,9 @@
 -- Tinkerbox section, Equipment: put on an equipment set when you change
 -- dual spec. Forever's Equipment Manager can't tie a set to a spec (its cog
 -- only renames and changes the icon), so this does it: pick a set for each
--- talent spec, and switching spec equips it.
+-- talent spec, and switching spec equips it. By default it first saves
+-- what you're wearing into the set of the spec you're leaving, so changes
+-- you made to your gear are kept.
 --
 -- Picks are kept per character (sets belong to one character), by set ID,
 -- so renaming a set keeps the pick. A deleted set reads as None.
@@ -14,7 +16,7 @@ local M = ns.Section({
     key = "equipmentSpecSets",
     title = "Equipment set per spec",
     desc = "Pick an equipment set for each of your talent specs. Switching spec puts that set on."
-        .. " Picks are saved for each character.",
+        .. " It can first save what you're wearing to the old spec's set. Picks are saved for each character.",
 })
 if not M then
     return
@@ -78,6 +80,27 @@ end
 
 local frame = CreateFrame("Frame")
 local waiting = false   -- a switch happened in combat
+local lastSpec          -- the spec you were in, to save its set on a switch
+
+-- Save what you're wearing into a spec's set, keeping the slots that set
+-- ignores ignored (the game's save uses whatever slots were last flagged).
+local function SaveForSpec(spec)
+    local id = PickedSet(spec)
+    local api = C_EquipmentSet
+    if not id or not api.SaveEquipmentSet or InCombatLockdown() then
+        return
+    end
+    if api.ClearIgnoredSlotsForSave and api.GetIgnoredSlots and api.IgnoreSlotForSave then
+        api.ClearIgnoredSlotsForSave()
+        for slot, ignored in pairs(api.GetIgnoredSlots(id) or {}) do
+            if ignored then
+                api.IgnoreSlotForSave(slot)
+            end
+        end
+    end
+    api.SaveEquipmentSet(id)
+    ns.Print("Saved your gear to " .. SetName(id) .. ".")
+end
 
 local function EquipForSpec()
     waiting = false
@@ -104,9 +127,19 @@ local function EquipForSpec()
     ns.Print("Put on " .. name .. " for " .. SpecName(spec) .. ".")
 end
 
+frame:RegisterEvent("PLAYER_ENTERING_WORLD")
 frame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
 frame:SetScript("OnEvent", function(_, event)
-    if event == "ACTIVE_TALENT_GROUP_CHANGED" or (event == "PLAYER_REGEN_ENABLED" and waiting) then
+    if event == "PLAYER_ENTERING_WORLD" then
+        lastSpec = ActiveSpec()
+    elseif event == "ACTIVE_TALENT_GROUP_CHANGED" then
+        local spec = ActiveSpec()
+        if M:IsOn() and M:Get("saveOnSwitch", true) and lastSpec and lastSpec ~= spec then
+            SaveForSpec(lastSpec)
+        end
+        lastSpec = spec
+        EquipForSpec()
+    elseif event == "PLAYER_REGEN_ENABLED" and waiting then
         EquipForSpec()
     end
 end)
@@ -186,9 +219,23 @@ function M:BuildOptions(body, below)
         height = height + 16 + 14
     end
 
+    local save = UI.Check(body)
+    save:SetPoint("TOPLEFT", anchor, "BOTTOMLEFT", -4, -12)
+    local saveLabel = UI.Text(body, "GameFontHighlight",
+        "Save your gear to the old spec's set before switching")
+    saveLabel:SetPoint("LEFT", save, "RIGHT", 2, 0)
+    save:SetScript("OnClick", function(self)
+        M:Set("saveOnSwitch", self:GetChecked() and true or false)
+    end)
+    updates[#updates + 1] = function()
+        save:SetChecked(M:Get("saveOnSwitch", true))
+    end
+    height = height + 12 + 26
+    anchor = save
+
     local note = UI.Text(body, "GameFontHighlightSmall")
     note:SetTextColor(0.7, 0.7, 0.7)
-    note:SetPoint("TOPLEFT", anchor, "BOTTOMLEFT", 0, -16)
+    note:SetPoint("TOPLEFT", anchor, "BOTTOMLEFT", 4, -12)
     note:SetWidth(460)
     height = height + 16 + 28
 
