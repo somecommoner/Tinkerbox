@@ -29,7 +29,9 @@ Game/Settings/Nameplates.lua
 Game/Settings/Gameplay.lua
 
 Game/Equipment/Equipment.lua
+Game/Equipment/Sets.lua
 Game/Equipment/SpecSets.lua
+Game/Equipment/SaveOnEquip.lua
 
 KinFolk/KinFolk.lua
 KinFolk/Pins.lua

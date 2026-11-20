@@ -43,13 +43,7 @@ local function Picks()
     return chars[key]
 end
 
-local function SetName(id)
-    if id == nil then
-        return nil
-    end
-    local name = C_EquipmentSet.GetEquipmentSetInfo(id)
-    return name
-end
+local SetName = ns.EquipmentSets.Name
 
 -- The set picked for a spec, if it still exists.
 local function PickedSet(spec)
@@ -82,24 +76,12 @@ local frame = CreateFrame("Frame")
 local waiting = false   -- a switch happened in combat
 local lastSpec          -- the spec you were in, to save its set on a switch
 
--- Save what you're wearing into a spec's set, keeping the slots that set
--- ignores ignored (the game's save uses whatever slots were last flagged).
+-- Save what you're wearing into a spec's set (Sets.lua).
 local function SaveForSpec(spec)
     local id = PickedSet(spec)
-    local api = C_EquipmentSet
-    if not id or not api.SaveEquipmentSet or InCombatLockdown() then
-        return
+    if id then
+        ns.EquipmentSets.Save(id)
     end
-    if api.ClearIgnoredSlotsForSave and api.GetIgnoredSlots and api.IgnoreSlotForSave then
-        api.ClearIgnoredSlotsForSave()
-        for slot, ignored in pairs(api.GetIgnoredSlots(id) or {}) do
-            if ignored then
-                api.IgnoreSlotForSave(slot)
-            end
-        end
-    end
-    api.SaveEquipmentSet(id)
-    ns.Print("Saved your gear to " .. SetName(id) .. ".")
 end
 
 local function EquipForSpec()
