@@ -28,6 +28,9 @@ Game/Settings/Camera.lua
 Game/Settings/Nameplates.lua
 Game/Settings/Gameplay.lua
 
+Game/Equipment/Equipment.lua
+Game/Equipment/SpecSets.lua
+
 KinFolk/KinFolk.lua
 KinFolk/Pins.lua
 KinFolk/PartyDots.lua

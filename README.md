@@ -26,6 +26,12 @@ The game's other settings past what its options menu allows. They work like the 
 - **Nameplates.** Nameplate distance (up to 100 yards; waits for combat to end).
 - **Spell queue and looting.** Spell queue window and auto loot delay.
 
+### Equipment
+
+Extras for the game's Equipment Manager.
+
+- **Equipment set per spec.** Pick an equipment set for each dual spec; switching spec puts it on (after combat, if you're in a fight). Saved per character. Forever's Equipment Manager can't assign sets to specs itself.
+
 ### KinFolk
 
 - **Party dots.** No KinFolk dot for guildmates in your group. The game already shows party and raid members on the minimap and world map, so KinFolk's dot is a double. This applies to both maps, and dots come back when they leave the group. KinFolk's zone count markers on the world map are left alone.
