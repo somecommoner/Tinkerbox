@@ -33,6 +33,12 @@ Extras for the game's Equipment Manager.
 - **Equipment set per spec.** Pick an equipment set for each dual spec; switching spec puts it on (after combat, if you're in a fight). Before that it saves what you're wearing to the old spec's set (a tick box, on by default; slots the set ignores stay ignored). Picks are saved per character. Forever's Equipment Manager can't assign sets to specs itself.
 - **Save before changing sets.** Pressing Equip on another set in the Equipment Manager first saves what you're wearing to the set you last put on. Equipping the set you already have on puts it back as it was, without saving. Macros and action bar set buttons don't save.
 
+### Minimap
+
+Changes to the minimap.
+
+- **Hide add-on buttons.** Every add-on's button comes off the minimap (LibDBIcon buttons and others an add-on made). The game's own minimap buttons, map pins and dots stay. Only the buttons' parent changes, nothing in the add-ons' own settings, and switching it off puts each one back where it was. Buttons already gathered by OneForAll's minimap button collector are left to it.
+
 ### KinFolk
 
 - **Party dots.** No KinFolk dot for guildmates in your group. The game already shows party and raid members on the minimap and world map, so KinFolk's dot is a double. This applies to both maps, and dots come back when they leave the group. KinFolk's zone count markers on the world map are left alone.

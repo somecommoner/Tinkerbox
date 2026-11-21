@@ -33,6 +33,9 @@ Game/Equipment/Sets.lua
 Game/Equipment/SpecSets.lua
 Game/Equipment/SaveOnEquip.lua
 
+Game/Minimap/Minimap.lua
+Game/Minimap/AddonButtons.lua
+
 KinFolk/KinFolk.lua
 KinFolk/Pins.lua
 KinFolk/PartyDots.lua
