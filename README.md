@@ -43,6 +43,12 @@ Extras for the game's Equipment Manager.
 
 If a KinFolk or OneForAll update changes what these rely on, they turn themselves off and say so once in chat and on their settings page.
 
+### Shadowed Unit Frames
+
+Brings back bits of the game's own unit frames that Shadowed Unit Frames hides along with them.
+
+- **Default totem bar.** SUF hides the game's player frame, and the game's totem bar (time left on each totem, right-click to destroy) goes with it. This moves the totem bar out into a frame of its own, under SUF's player frame to start with; unlock it on the settings page to drag it elsewhere. Only its parent and position change, never in combat, and switching it off puts it back.
+
 ## Design rules
 
 1. **Modules and sections.** A module is one area Tinkerbox changes: the game's graphics, the game's other settings, or one add-on. Its files live in a folder named after what it changes (`Game/Graphics/`, `Game/Settings/`, `KinFolk/`, `OneForAll/`): the module file (`ns.Module{ key, title, desc, tweaks }`), then its sections, one tweak per file (`ns.Section{ module, key, title, desc, needs }`). Sections don't reach into each other. Code that several sections share goes in a helper file with no switch of its own (`KinFolk/Pins.lua`, or `Game/CVars.lua`, which turns a list of CVars into a section with its settings). Shared page widgets are in `Core/Widgets.lua`.

@@ -3,7 +3,7 @@
 ## Notes: Small fixes for WoW Forever and other add-ons, made from outside them. Switch modules on or off in Options > AddOns > Tinkerbox; each module has its own page with its sections.
 ## Author: somecommoner
 ## Version: 0.3.0
-## OptionalDeps: KinFolk, OneForAll
+## OptionalDeps: KinFolk, OneForAll, ShadowedUnitFrames
 ## SavedVariables: TinkerboxDB
 
 Core/Core.lua
@@ -39,3 +39,6 @@ KinFolk/PartyDots.lua
 
 OneForAll/OneForAll.lua
 OneForAll/GuildDots.lua
+
+ShadowedUnitFrames/ShadowedUnitFrames.lua
+ShadowedUnitFrames/TotemFrame.lua
