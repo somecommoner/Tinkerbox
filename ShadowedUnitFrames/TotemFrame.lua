@@ -99,12 +99,12 @@ local function WaitForCombat()
     frame:RegisterEvent("PLAYER_REGEN_ENABLED")
 end
 
-local hooked = false
+local hooked = setmetatable({}, { __mode = "k" })
 local function Hook(totem)
-    if hooked then
+    if hooked[totem] then
         return
     end
-    hooked = true
+    hooked[totem] = true
     -- The game moving it back under the player frame (or re-anchoring it):
     -- put it back in the holder, now or after combat.
     hooksecurefunc(totem, "SetParent", function(_, parent)
@@ -198,6 +198,24 @@ end)
 
 -- Events ----------------------------------------------------------------
 
+-- Something can still move it without the hooks seeing (it went missing
+-- mid-session on 2026-11-28 until a /reload), so it's checked again when
+-- your totems change or you switch spec: back in the holder if it isn't.
+local function Recheck()
+    local totem = Totem()
+    if not taken or not M:IsOn() or not totem then
+        return
+    end
+    Hook(totem)
+    if totem:GetParent() ~= holder then
+        if Blocked(totem) then
+            WaitForCombat()
+        else
+            Attach(totem)
+        end
+    end
+end
+
 local function Update()
     if M:IsOn() then
         Take()
@@ -209,8 +227,12 @@ end
 
 frame:RegisterEvent("PLAYER_LOGIN")
 frame:RegisterEvent("PLAYER_ENTERING_WORLD")
+frame:RegisterEvent("PLAYER_TOTEM_UPDATE")
+frame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
 frame:SetScript("OnEvent", function(_, event)
-    if event == "PLAYER_REGEN_ENABLED" then
+    if event == "PLAYER_TOTEM_UPDATE" or event == "ACTIVE_TALENT_GROUP_CHANGED" then
+        Recheck()
+    elseif event == "PLAYER_REGEN_ENABLED" then
         if not waiting then
             return
         end
